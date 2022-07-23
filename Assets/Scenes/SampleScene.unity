@@ -858,7 +858,7 @@ GameObject:
   m_Layer: 0
   m_Name: ClearArea
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1221,14 +1221,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848124155}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2651fd6939fce65408d153e4cd33ba1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   zombieSpawnPoints: {fileID: 1161322894}
   zombiePrefab: {fileID: 8793656515762597446, guid: eb40bb4b2be9a9d4c97f2ab068b0e9af, type: 3}
-  randomSpawnTime: 7
+  randomSpawnTime: 12
+  zombieSpawned: 0
 --- !u!4 &1848124157
 Transform:
   m_ObjectHideFlags: 0

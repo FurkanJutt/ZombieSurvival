@@ -257,7 +257,7 @@ MonoBehaviour:
   sprintCooldown: 0.5
   sprintFOV: 80
   sprintFOVStepTime: 10
-  sprintSound: {fileID: 8300000, guid: 00cc4ec93869b634f927d1527b812bd2, type: 3}
+  sprintSound: {fileID: 8300000, guid: bbcfff93a34ecbd438bc994254473b01, type: 3}
   breathSound: {fileID: 8300000, guid: dc4553ab7ce1f61448d777576c836c30, type: 3}
   useSprintBar: 1
   hideBarWhenFull: 1
@@ -292,7 +292,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -388,7 +388,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.68
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -484,7 +484,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.655
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0

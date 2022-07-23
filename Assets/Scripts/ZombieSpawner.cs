@@ -7,6 +7,7 @@ public class ZombieSpawner : MonoBehaviour
     [SerializeField] private Transform zombieSpawnPoints;
     [SerializeField] private GameObject zombiePrefab;
     [SerializeField] private float randomSpawnTime = 10f;
+    [SerializeField] private int zombieSpawned = 0;
 
     private Transform[] spawnPoints;
     private bool spawnloop = true;
@@ -27,5 +28,6 @@ public class ZombieSpawner : MonoBehaviour
         int i = Random.Range(1, spawnPoints.Length);
         GameObject newZombie = Instantiate(zombiePrefab, spawnPoints[i].transform.position, transform.rotation);
         newZombie.transform.parent = transform;
+        zombieSpawned++;
     }
 }
