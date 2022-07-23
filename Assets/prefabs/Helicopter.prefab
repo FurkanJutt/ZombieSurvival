@@ -182,6 +182,7 @@ GameObject:
   - component: {fileID: 8957118484813425468}
   - component: {fileID: 8957118484813425459}
   - component: {fileID: 3381847724065541131}
+  - component: {fileID: 6605279035816462161}
   m_Layer: 0
   m_Name: Helicopter
   m_TagString: Untagged
@@ -481,6 +482,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   callSound: {fileID: 8300000, guid: 53f65e57d6bf34c7592571f82475f66f, type: 3}
+  flySpeed: 60
+  heloLanded: 0
 --- !u!54 &3381847724065541131
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -497,3 +500,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &6605279035816462161
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8957118484857480950}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 287.89157, y: 319.81137, z: 1299.1978}
+  m_Center: {x: 0, y: 160.84352, z: -260.59393}

@@ -17,6 +17,7 @@ using UnityEngine.UI;
 public class FirstPersonController : MonoBehaviour
 {
     private Rigidbody rb;
+    private AudioSource _audioSource1, _audioSource2, _audioSource3;
 
     #region Camera Movement Variables
 
@@ -58,6 +59,7 @@ public class FirstPersonController : MonoBehaviour
     public bool playerCanMove = true;
     public float walkSpeed = 5f;
     public float maxVelocityChange = 10f;
+    public AudioClip walkSound;
 
     // Internal Variables
     private bool isWalking = false;
@@ -72,6 +74,7 @@ public class FirstPersonController : MonoBehaviour
     public float sprintCooldown = .5f;
     public float sprintFOV = 80f;
     public float sprintFOVStepTime = 10f;
+    public AudioClip sprintSound, breathSound;
 
     // Sprint Bar
     public bool useSprintBar = true;
@@ -97,6 +100,8 @@ public class FirstPersonController : MonoBehaviour
     public bool enableJump = true;
     public KeyCode jumpKey = KeyCode.Space;
     public float jumpPower = 5f;
+    public bool isJumping = false;
+    public AudioClip jumpSound;
 
     // Internal Variables
     private bool isGrounded = false;
@@ -110,6 +115,7 @@ public class FirstPersonController : MonoBehaviour
     public KeyCode crouchKey = KeyCode.LeftControl;
     public float crouchHeight = .75f;
     public float speedReduction = .5f;
+    public AudioClip crouchSound;
 
     // Internal Variables
     private bool isCrouched = false;
@@ -134,6 +140,23 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        //_audioSource = GetComponent<AudioSource>();
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        foreach (AudioSource audioSource in audioSources)
+        {
+            if (audioSource.priority == 128)
+            {
+                _audioSource1 = audioSource;
+            }
+            if (audioSource.priority == 130)
+            {
+                _audioSource2 = audioSource;
+            }
+            if (audioSource.priority == 132)
+            {
+                _audioSource3 = audioSource;
+            }
+        }
 
         crosshairObject = GetComponentInChildren<Image>();
 
@@ -331,6 +354,7 @@ public class FirstPersonController : MonoBehaviour
             Jump();
         }
 
+
         #endregion
 
         #region Crouch
@@ -378,10 +402,22 @@ public class FirstPersonController : MonoBehaviour
             if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
             {
                 isWalking = true;
+                if (!_audioSource1.isPlaying && isWalking && !isSprinting && !isCrouched)
+                {
+                    Debug.Log("walking vro");
+                    _audioSource1.clip = walkSound;
+                    _audioSource1.Play();
+                    _audioSource1.loop = true;
+                }
+                else if (isSprinting)
+                {
+                    _audioSource1.Stop();
+                }
             }
             else
             {
                 isWalking = false;
+                _audioSource1.Stop();
             }
 
             // All movement calculations shile sprint is active
@@ -398,9 +434,20 @@ public class FirstPersonController : MonoBehaviour
 
                 // Player is only moving when valocity change != 0
                 // Makes sure fov change only happens during movement
-                if (velocityChange.x != 0 || velocityChange.z != 0)
+                if (velocityChange.x != 0 || velocityChange.z != 0 && isGrounded)
                 {
                     isSprinting = true;
+                    if (!_audioSource2.isPlaying && isSprinting && isWalking)
+                    {
+                        Debug.Log("running vro");
+                        _audioSource2.clip = sprintSound;
+                        _audioSource2.Play();
+                        _audioSource2.loop = true;
+                    }
+                    else if(isJumping && !isGrounded)
+                    {
+                        _audioSource2.Stop();
+                    }
 
                     if (isCrouched)
                     {
@@ -419,6 +466,7 @@ public class FirstPersonController : MonoBehaviour
             else
             {
                 isSprinting = false;
+                _audioSource2.Stop();
 
                 if (hideBarWhenFull && sprintRemaining == sprintDuration)
                 {
@@ -466,10 +514,19 @@ public class FirstPersonController : MonoBehaviour
         {
             rb.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
             isGrounded = false;
+            isJumping = true;
         }
 
+        //if (!_audioSource3.isPlaying)
+        //{
+        //    Debug.Log("jumping vro");
+        //    _audioSource3.clip = jumpSound;
+        //    _audioSource3.Play();
+        //    _audioSource3.loop = false;
+        //}
+        
         // When crouched and using toggle system, will uncrouch for a jump
-        if(isCrouched && !holdToCrouch)
+        if (isCrouched && !holdToCrouch)
         {
             Crouch();
         }
@@ -618,6 +675,13 @@ public class FirstPersonController : MonoBehaviour
 
         GUI.enabled = fpc.playerCanMove;
         fpc.walkSpeed = EditorGUILayout.Slider(new GUIContent("Walk Speed", "Determines how fast the player will move while walking."), fpc.walkSpeed, .1f, fpc.sprintSpeed);
+
+        EditorGUI.indentLevel++;
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("WalkSound", "audio clip to be used as walk sound."));
+        fpc.walkSound = (AudioClip)EditorGUILayout.ObjectField(fpc.walkSound, typeof(AudioClip), true);
+        EditorGUILayout.EndHorizontal();
+        EditorGUI.indentLevel--;
         GUI.enabled = true;
 
         EditorGUILayout.Space();
@@ -630,6 +694,17 @@ public class FirstPersonController : MonoBehaviour
 
         GUI.enabled = fpc.enableSprint;
         fpc.unlimitedSprint = EditorGUILayout.ToggleLeft(new GUIContent("Unlimited Sprint", "Determines if 'Sprint Duration' is enabled. Turning this on will allow for unlimited sprint."), fpc.unlimitedSprint);
+        EditorGUI.indentLevel++;
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("SprintSound", "audio clip to be used as sprint sound."));
+        fpc.sprintSound = (AudioClip)EditorGUILayout.ObjectField(fpc.sprintSound, typeof(AudioClip), true);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("BreathSound", "audio clip to be used as breath sound."));
+        fpc.breathSound = (AudioClip)EditorGUILayout.ObjectField(fpc.breathSound, typeof(AudioClip), true);
+        EditorGUILayout.EndHorizontal();
+        EditorGUI.indentLevel--;
         fpc.sprintKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Sprint Key", "Determines what key is used to sprint."), fpc.sprintKey);
         fpc.sprintSpeed = EditorGUILayout.Slider(new GUIContent("Sprint Speed", "Determines how fast the player will move while sprinting."), fpc.sprintSpeed, fpc.walkSpeed, 20f);
 
@@ -685,6 +760,13 @@ public class FirstPersonController : MonoBehaviour
         fpc.enableJump = EditorGUILayout.ToggleLeft(new GUIContent("Enable Jump", "Determines if the player is allowed to jump."), fpc.enableJump);
 
         GUI.enabled = fpc.enableJump;
+        EditorGUI.indentLevel++;
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("JumpSound", "audio clip to be used as jump sound."));
+        fpc.jumpSound = (AudioClip)EditorGUILayout.ObjectField(fpc.jumpSound, typeof(AudioClip), true);
+        EditorGUILayout.EndHorizontal();
+        EditorGUI.indentLevel--;
+
         fpc.jumpKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Jump Key", "Determines what key is used to jump."), fpc.jumpKey);
         fpc.jumpPower = EditorGUILayout.Slider(new GUIContent("Jump Power", "Determines how high the player will jump."), fpc.jumpPower, .1f, 20f);
         GUI.enabled = true;
@@ -700,6 +782,13 @@ public class FirstPersonController : MonoBehaviour
         fpc.enableCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Enable Crouch", "Determines if the player is allowed to crouch."), fpc.enableCrouch);
 
         GUI.enabled = fpc.enableCrouch;
+        EditorGUI.indentLevel++;
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel(new GUIContent("CrouchSound", "audio clip to be used as crouch sound."));
+        fpc.crouchSound = (AudioClip)EditorGUILayout.ObjectField(fpc.crouchSound, typeof(AudioClip), true);
+        EditorGUILayout.EndHorizontal();
+        EditorGUI.indentLevel--;
+
         fpc.holdToCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Hold To Crouch", "Requires the player to hold the crouch key instead if pressing to crouch and uncrouch."), fpc.holdToCrouch);
         fpc.crouchKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Crouch Key", "Determines what key is used to crouch."), fpc.crouchKey);
         fpc.crouchHeight = EditorGUILayout.Slider(new GUIContent("Crouch Height", "Determines the y scale of the player object when crouched."), fpc.crouchHeight, .1f, 1);

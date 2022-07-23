@@ -33,6 +33,10 @@ public class ClearArea : MonoBehaviour
             }
             _player.OnFindClearArea();
         }
+        if (other.GetComponent<Zombie>())
+        {
+            Debug.Log("There are zombies in area");
+        }
     }
 
     private void OnTriggerExit(Collider other)
